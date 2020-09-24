@@ -546,7 +546,182 @@ dev.off() #Stops R from redirecting plots
 ##Conditionals
 #We can write code that returns a decision from the computer
 
-#Comarisons
+#Comparisons
 num <- 37
 num > 100
 num < 100
+
+#We can pair comparison operators with conditional statements
+
+num <- 37
+if (num > 100) {
+  print("greater")
+} else {
+  print("not greater")
+}
+print("done")
+
+#An else statement is not always necessary
+num <- 53
+if (num > 100) {
+  print("num is greater than 100")
+}
+
+#Several statements can be connected with else if
+sign <- function(num) {
+  if (num > 0) {
+    return(1)
+  } else if (num == 0) {
+    return(0)
+  } else {
+    return(-1)
+  }
+}
+
+sign(-3)
+sign(0)
+sign(2/3)
+
+# && means AND, || means OR
+if (1 > 0 && -1 > 0) {
+  print("both parts are true")
+} else {
+  print("at least one part is not true")
+}
+
+if (1 > 0 || -1 > 0) {
+  print("at least one part is true")
+} else {
+  print("neither part is true")
+}
+
+##Exercises
+#Write function that plots boxplot or stripchart depending on conditions
+plot_dist <- function(x, threshold) {
+  if (length(x) > threshold) {
+    boxplot(x)
+  } else {
+    stripchart(x)
+  }
+}
+
+#Call function
+dat <- read.csv("data/inflammation-01.csv", header = FALSE)
+plot_dist(dat[, 10], threshold = 10)
+
+plot_dist(dat[1:5, 10], threshold = 10)  
+
+#Write function that plots boxplot, histogram, or stripchart
+plot_dist <- function(x, threshold, use_boxplot = TRUE) {
+  if (length(x) > threshold && use_boxplot) {
+    boxplot(x)
+  } else if (length(x) > threshold && !use_boxplot) {
+    hist(x)
+  } else {
+    stripchart(x)
+  }
+}
+
+#Call function
+dat <- read.csv("data/inflammation-01.csv", header = FALSE)
+plot_dist(dat[, 10], threshold = 10, use_boxplot = TRUE)   
+
+plot_dist(dat[, 10], threshold = 10, use_boxplot = FALSE) 
+
+plot_dist(dat[1:5, 10], threshold = 10)  
+
+#Find the file containing the patient with the highest avg inflammation
+filenames <- list.files(path = "data", pattern = "inflammation-[0-9]{2}.csv", full.names = TRUE)
+filename_max <- "" 
+patient_max <- 0 
+average_inf_max <- 0 
+
+for (f in filenames) {
+  dat <- read.csv(file = f, header = FALSE)
+  dat.means <- apply(dat, 1, mean)
+  
+  for (patient_index in 1:length(dat.means)){
+    patient_average_inf <- dat.means[patient_index]
+  }
+    if (patient_average_inf > average_inf_max) {
+      average_inf_max <- patient_average_inf
+      filename_max <- f
+      patient_max <- patient_index
+    }
+}
+
+#Call function
+print(filename_max)
+print(patient_max)
+print(average_inf_max)
+
+##Saving automatically generated figures
+#Update analyze to include conditionals
+
+analyze <- function(filename, output = NULL) {
+  
+  if (!is.null(output)) {
+    pdf(output)
+  }
+  dat <- read.csv(file = filename, header = FALSE)
+  avg_day_inflammation <- apply(dat, 2, mean)
+  plot(avg_day_inflammation)
+  max_day_inflammation <- apply(dat, 2, max)
+  plot(max_day_inflammation)
+  min_day_inflammation <- apply(dat, 2, min)
+  plot(min_day_inflammation)
+  
+  if (!is.null(output)) {
+    dev.off()
+  }
+}
+
+#We can use analyze interactively
+analyze("data/inflammation-01.csv")
+
+#We can now also use it to save plots
+analyze("data/inflammation-01.csv", output = "inflammation-01.pdf")
+
+#Let's create a directory to save our results
+dir.create("results")
+
+#Run analyze
+analyze("data/inflammation-01.csv", output = "results/inflammation-01.pdf")
+
+#We now have to update analyze_all with this new info
+
+analyze_all <- function(pattern) {
+  data_dir <- "data"
+  results_dir <- "results"
+  filenames <- list.files(path = data_dir, pattern = pattern)
+  for (f in filenames) {
+    pdf_name <- file.path(results_dir, sub("csv", "pdf", f))
+    analyze(file.path(data_dir, f), output = pdf_name)
+  }
+}
+
+#Now all results can be saved in one line of code
+analyze_all("inflammation.*csv")
+
+##Exercises
+#Update analyze to use lines instead of dots to plot
+
+analyze <- function(filename, output = NULL) {
+  
+  if (!is.null(output)) {
+    pdf(output)
+  }
+  dat <- read.csv(file = filename, header = FALSE)
+  avg_day_inflammation <- apply(dat, 2, mean)
+  plot(avg_day_inflammation, type = "l")
+  max_day_inflammation <- apply(dat, 2, max)
+  plot(max_day_inflammation, type = "l")
+  min_day_inflammation <- apply(dat, 2, min)
+  plot(min_day_inflammation, type = "l")
+  if (!is.null(output)) {
+    dev.off()
+  }
+}
+
+#Recreate figures with analyze_all
+analyze_all("inflammation.*csv")
