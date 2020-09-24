@@ -1,4 +1,4 @@
-## 11 ##
+########################################################## CHAPTER 11 #######################################################################
 
 # First, set your working directory (see episode 'Analyzing Patient Data' for more
 # info)
@@ -92,7 +92,7 @@ write.csv(carSpeeds,
           row.names = FALSE,
           na = '-9999')
 
-## 12 ##
+########################################################## CHAPTER 12 #######################################################################
 
 # The factor() command is used to create and modify factors in R
 sex <- factor(c("male", "female", "female", "male"))
@@ -158,7 +158,7 @@ plot(x = dat$Gender, y = dat$BloodPressure)
 levels(dat$Gender)[2] <- 'f'
 plot(x = dat$Gender, y = dat$BloodPressure)
 
-## 13 ##
+########################################################## CHAPTER 13 #######################################################################
 
 # Example
 x <- "dataset"
@@ -323,7 +323,7 @@ dat$y
 # Column Types in Data Frames
 str(iris)
 
-## 14 ##
+########################################################## CHAPTER 14 #######################################################################
 
 # The Call Stack
 original <- 32
@@ -347,7 +347,7 @@ diff <- read.csv(file = "data/inflammation-01.csv", header = FALSE)
 # span of inflammation data
 span(diff)
 
-## 15 ##
+########################################################## CHAPTER 15 #######################################################################
 
 # This lesson is an extension of Analyzing Multiple Data Sets. 
 # In that lesson, we introduced how to run a custom 
