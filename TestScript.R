@@ -5,13 +5,13 @@
 ######################### CHAPTER 1 #####################################
 
 ##Set working directory (adjust to user)
-setwd('C:/Users/andre/Desktop/r-novice-inflammation/')
+setwd('C:/Users/andre/Desktop/rstudio')
 
 ##Import data into RStudio
 
 ##Remember to set header = FALSE or the console will use our values as headers. 
 ##The default is TRUE.
-read.csv(file = 'data/inflammatio-01.csv', header = FALSE)
+read.csv(file = 'data/inflammation-01.csv', header = FALSE)
 
 ##Assigning variables
 weight_kg <- 55
@@ -503,3 +503,50 @@ expo(2,4)
 #R has a function to search files in a certain directory
 list.files(path = "data", pattern = "csv")
 
+#We can tailor it to our working directory
+list.files(path = "data", pattern = "inflammation")
+
+#We can show the full names of our files using "full.names = TRUE"
+list.files(path = "data", pattern = "csv", full.names = TRUE)
+list.files(path = "data", pattern = "inflammation", full.names = TRUE)
+
+#Let's test out our analyze function
+filenames <- list.files(path = "data",  
+                       pattern = "inflammation-[0-9]{2}.csv",
+                      full.names = TRUE)
+
+filenames <- filenames[1:3]
+
+for (f in filenames) {
+  print(f)
+  analyze(f)
+}
+
+##Exercises
+#Write analyze all function that runs analyze for all files in a directory
+analyze_all <- function(folder = "data", pattern) {
+  filenames <- list.files(path = folder, pattern = pattern, full.names = TRUE)
+  for (f in filenames) {
+    analyze(f)
+  }
+}
+
+######################### CHAPTER 4 #####################################
+
+
+##Saving plots to a file
+#The following arguments save our plots to a PDF
+
+pdf("inflammation-01.pdf") #Naming file
+analyze("data/inflammation-01.csv") #Producing plot
+dev.off() #Stops R from redirecting plots
+
+#The function dev.cur() shows whether your plots are still being redirected
+
+##Conditionals
+#We can write code that returns a decision from the computer
+
+#Comarisons
+num <- 37
+num > 100
+num < 100
