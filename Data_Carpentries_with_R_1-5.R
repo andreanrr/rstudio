@@ -725,3 +725,9 @@ analyze <- function(filename, output = NULL) {
 
 #Recreate figures with analyze_all
 analyze_all("inflammation.*csv")
+
+
+######################### CHAPTER 5 #####################################
+
+
+#Bash commands will be stored in a nano file
