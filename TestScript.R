@@ -1,3 +1,9 @@
+
+#Chapters 1-5 were done by Andrea N. Rivera Rosario
+
+
+######################### CHAPTER 1 #####################################
+
 ##Set working directory (adjust to user)
 setwd('C:/Users/andre/Desktop/r-novice-inflammation/')
 
@@ -162,3 +168,338 @@ plot(min_day_inflammation)
 #Standard deviation of inflammation data 
 sd_day_inflammation <- apply(dat, 2, sd)
 plot(sd_day_inflammation)
+
+######################### CHAPTER 2 #####################################
+
+
+##Defining a function
+#Convert Fahrenheit to Celsius
+fahrenheit_to_celsius <- function(temp_F) {
+  temp_C <- (temp_F - 32) * 5 / 9
+  return(temp_C)
+}
+
+#Call the function
+fahrenheit_to_celsius(32)
+fahrenheit_to_celsius(212)
+
+#Converting Celsius to Kelvin
+celsius_to_kelvin <- function(temp_C) {
+  temp_K <- temp_C + 273.15
+  return(temp_K)
+}
+
+#Call the function
+celsius_to_kelvin(0)
+
+#Converting Fahrenheit to Kelvin
+fahrenheit_to_kelvin <- function(temp_F) {
+  temp_C <- fahrenheit_to_celsius(temp_F)
+  temp_K <- celsius_to_kelvin(temp_C)
+  return(temp_K)
+}
+
+#Call the function
+fahrenheit_to_kelvin(32.0)
+
+#Nesting functions
+celsius_to_kelvin(fahrenheit_to_celsius(32.0))
+
+##Write a function that adds a wrapper at the beginning and end of a vector
+#Define function
+highlight <- function(content, wrapper) {
+  answer <- c(wrapper, content, wrapper)
+  return(answer)
+}
+
+#Define objects of function
+best_practice <- c("Write", "programs", "for", "people", "not", "computers")
+asterisk <- "***"  
+
+#Call function
+highlight(best_practice, asterisk)
+
+##Write a function that returns first and last elements of a vector
+#Define function
+edges <- function(v) {
+  first <- v[1]
+  last <- v[length(v)]
+  answer <- c(first, last)
+  return(answer)
+}
+
+#Define objects of function
+dry_principle <- c("Don't", "repeat", "yourself", "or", "others")
+
+#Call function
+edges(dry_principle)
+
+#It's possible to set a default value for a function
+input_1 <- 20
+mySum <- function(input_1, input_2 = 10) {
+  output <- input_1 + input_2
+  return(output)
+}
+
+#You can change the default value 
+mySum(input_1 = 1, 3)
+
+##Testing, error handling, and documenting
+#Function to center data around midpoint
+center <- function(data, midpoint) {
+  new_data <- (data - mean(data)) + midpoint
+  return(new_data)
+}
+
+#Test on empty vector
+z <- c(0, 0, 0, 0)
+center(z, 3)
+
+#Test on real data
+dat <- read.csv(file = "data/inflammation-01.csv", header = FALSE)
+centered <- center(dat[, 4], 0)
+head(centered)
+
+#Use other testing methods to confirm
+
+min(dat[, 4]) #original minimum
+mean(dat[, 4]) #original mean
+max(dat[, 4]) #original maximum
+
+min(centered) #centered minimum
+mean(centered) #centered mean
+max(centered) #centered maximum
+
+sd(dat[,4]) #original standard deviation
+
+sd(centered) #centered standard deviation
+
+sd(dat[,4]) - sd(centered) #difference between standard deviations should be 0
+
+all.equal(sd(dat[, 4]), sd(centered)) #to confirm sd difference was not rounded
+
+##Error handling
+#These arguments will return NA when only 1 value in the dataframe is blank
+
+datNA <- dat
+datNA[10,4] <- NA
+
+center(datNA[,4], 0)
+
+#We can change the center function to exclude NA values
+center <- function(data, midpoint) {
+  new_data <- (data - mean(data, na.rm=TRUE)) + midpoint
+  return(new_data)
+}
+
+#Call the function
+center(datNA[,4], 0)
+
+#The goal of a good script is for it to produce informative errors
+##Examples of errors
+
+#Adding factors and characters to dataframe
+datNA[,1] <- as.factor(datNA[,1])
+datNA[,2] <- as.character(datNA[,2])
+
+center(datNA[,1], 0)
+center(datNA[,2], 0)
+
+##Documentation
+#Comments enclosed in "#" are added to document code
+center <- function(data, midpoint) {
+  # return a new vector containing the original data centered around the
+  # midpoint.
+  # Example: center(c(1, 2, 3), 0) => c(-1, 0, 1)
+  new_data <- (data - mean(data)) + midpoint
+  return(new_data)
+}
+
+#Official documentation (the kind that appears in the "help" pane) is
+# written in .Rd format using a text editor
+
+#Writing a well-documented function
+
+#Example 1
+analyze <- function(filename) {
+  # Plots the average, min, and max inflammation over time.
+  # Input is character string of a csv file.
+  dat <- read.csv(file = filename, header = FALSE)
+  avg_day_inflammation <- apply(dat, 2, mean)
+  plot(avg_day_inflammation)
+  max_day_inflammation <- apply(dat, 2, max)
+  plot(max_day_inflammation)
+  min_day_inflammation <- apply(dat, 2, min)
+  plot(min_day_inflammation)
+}
+
+#Example 2
+rescale <- function(v) {
+  # Rescales a vector, v, to lie in the range 0 to 1.
+  L <- min(v)
+  H <- max(v)
+  result <- (v - L) / (H - L)
+  return(result)
+}
+
+##Defining defaults
+#When passing arguments to a function, they must be ordered correctly
+
+#Correct
+dat <- read.csv("data/inflammation-01.csv", FALSE)
+
+#Incorrect order (produces error)
+dat <- read.csv(header = FALSE, file = "data/inflammation-01.csv")
+dat <- read.csv(FALSE, "data/inflammation-01.csv")
+
+#Redefine default for center function
+center <- function(data, midpoint = 0) {
+   new_data <- (data - mean(data)) + midpoint
+  return(new_data)
+}
+
+#Calling with 2 arguments works like before
+test_data <- c(0, 0, 0, 0)
+center(test_data, 3)
+
+#Calling with one argument also works because the second argument has a default
+more_data <- 5 + test_data
+more_data
+center(more_data)
+
+#The function can be called with no arguments because defaults are set
+display <- function(a = 1, b = 2, c = 3) {
+  result <- c(a, b, c)
+  names(result) <- c("a", "b", "c")  # This names each element of the vector
+  return(result)
+}
+
+display()
+
+#Call with one argument
+display(55)
+
+#Call with two arguments
+display(55, 66)
+
+#Call with three arguments
+display(55, 66, 77)
+
+#To set a specific value use "="
+display(c = 77)
+
+#Arguments are processed from left to right, as per function documentation
+#For read.csv the following line of code shows correct order
+?read.csv
+
+##Exercise
+#Rewriting the rescale function to a value between 0 and 1 by default
+rescale <- function(v, lower = 0, upper = 1) {
+  # Rescales a vector, v, to lie in the range lower to upper.
+  L <- min(v)
+  H <- max(v)
+  result <- (v - L) / (H - L) * (upper - lower) + lower
+  return(result)
+}
+
+######################### CHAPTER 3 #####################################
+
+
+##We can use the analyze function we created to view different data sets
+analyze("data/inflammation-02.csv")
+
+##Loops can be used to apply analyze to more than one set with one command
+
+##For Loops
+#Printing each word in a sentence with a function
+
+best_practice <- c("Let", "the", "computer", "do", "the", "work")
+print_words <- function(sentence) {
+  print(sentence[1])
+  print(sentence[2])
+  print(sentence[3])
+  print(sentence[4])
+  print(sentence[5])
+  print(sentence[6])
+}
+
+print_words(best_practice)
+
+#This output is ok but it is very tedious to obtain
+#Let's use indexing
+best_practice[-6]
+print_words(best_practice[-6])
+
+#Let's use an improved function for print_words
+print_words <- function(sentence) {
+  for (word in sentence) {
+    print(word)
+  }
+}
+
+print_words(best_practice)
+
+#Here is another for loop 
+len <- 0
+vowels <- c("a", "e", "i", "o", "u")
+for (v in vowels) {
+  len <- len + 1
+}
+
+#Print number of vowels using loop variable
+len
+
+#This loop prints a letter from the vector
+letter <- "z"
+for (letter in c("a", "b", "c")) {
+  print(letter)
+}
+
+#We can reuse the loop variable
+letter
+
+#Instead of using a loop to find length, R has a function for it
+length(vowels)
+
+##Exercises
+#The seq function creates a list of numbers
+seq(3)
+
+#The following function prints the first N numbers
+print_N <- function(N) {
+  nseq <- seq(N)
+  for (num in nseq) {
+    print(num)
+  }
+}
+
+print_N(3)
+
+#The following function calculates the sum of values without using sum()
+
+total <- function(vec) {
+  vec_sum <- 0
+  for (num in vec) {
+    vec_sum <- vec_sum + num
+  }
+  return(vec_sum)
+}
+
+ex_vec <- c(4, 8, 15, 16, 23, 42)
+total(ex_vec)
+
+#The following function mimics exponentiation
+expo <- function(base, power) {
+  result <- 1
+  for (i in seq(power)) {
+    result <- result * base
+  }
+  return(result)
+}
+
+expo(2,4)
+
+##Processing multiple files
+#R has a function to search files in a certain directory
+list.files(path = "data", pattern = "csv")
+
