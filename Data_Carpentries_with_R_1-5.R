@@ -730,4 +730,4 @@ analyze_all("inflammation.*csv")
 ######################### CHAPTER 5 #####################################
 
 
-#Bash commands will be stored in a nano file
+#Several R scripts were written as a product of this workshop
