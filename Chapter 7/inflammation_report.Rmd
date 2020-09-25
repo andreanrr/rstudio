@@ -1,0 +1,49 @@
+---
+title: "inflammation_report.Rmd"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Inflammation data
+
+This code calculates the average inflammation of each patient
+
+
+```{r}
+
+dat <- read.csv(file = "data/inflammation-01.csv", header = FALSE)
+avg_patient_inflammation <- apply(dat, 1, mean)
+```
+
+This code calculates the average inflammation per day of patients
+```{r}
+avg_day_inflammation <- apply(dat, 2, mean)
+
+```
+
+
+The median inflammation is calculated by
+
+```{r}
+median_inflammation <- apply(dat, 2, median)
+```
+**average inflammation of each patient**
+```{r}
+print(avg_patient_inflammation)
+```
+
+**average inflammation per day of patients**
+```{r}
+print(avg_day_inflammation)
+```
+
+
+**median inflammation level**
+
+```{r}
+print(median_inflammation)
+```
+
